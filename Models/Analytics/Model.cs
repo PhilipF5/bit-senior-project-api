@@ -1,5 +1,5 @@
 ﻿using System;
-namespace api.Models
+namespace api.Models.Analytics
 {
 	public class Model
 	{

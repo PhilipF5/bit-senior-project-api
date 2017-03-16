@@ -25,6 +25,7 @@ namespace api.Models
 		{
 			using (var connection = new SqlConnection("Server=tcp:auctionit.database.windows.net,1433;Initial Catalog=auctionitdb;Persist Security Info=False;User ID=bit4454;Password=4Fy>oj@8&8;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
 			{
+				// Load Auctions table data
 				var aCommand = new SqlCommand("SELECT * FROM Auctions WHERE ID = @id", connection);
 				aCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;
 				connection.Open();
@@ -34,6 +35,7 @@ namespace api.Models
 				StartTime = DateTime.Parse(aReader[2].ToString());
 				EndTime = DateTime.Parse(aReader[3].ToString());
 
+				// Load AuctionHouses table data
 				var hCommand = new SqlCommand("SELECT * FROM AuctionHouses WHERE ID = @id", connection);
 				hCommand.Parameters.Add("@id", SqlDbType.Int).Value = (int)aReader[1];
 				var hReader = hCommand.ExecuteReader();
@@ -44,6 +46,7 @@ namespace api.Models
 				StateCode = StateInfo.GetCode(State);
 				PostalCode = hReader[4].ToString();
 
+				// Load Participants table data
 				var pCommand = new SqlCommand("SELECT Buyer_ID FROM Participants WHERE Auction_ID = @id", connection);
 				pCommand.Parameters.Add("@id", SqlDbType.Int).Value = ID;
 				var pReader = pCommand.ExecuteReader();
@@ -53,6 +56,7 @@ namespace api.Models
 				}
 				Participants = Buyers.Count;
 
+				// Load Lots table data
 				var lCommand = new SqlCommand("SELECT Lot_ID FROM Lots WHERE Auction_ID = @id", connection);
 				lCommand.Parameters.Add("@id", SqlDbType.Int).Value = ID;
 				var lReader = lCommand.ExecuteReader();
