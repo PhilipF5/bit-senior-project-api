@@ -16,7 +16,13 @@ namespace api.Models
 		public int Participants;
 		public string PostalCode;
 		public DateTime StartTime;
-		public string State;
+		public string State
+		{
+			get
+			{
+				return StateInfo.GetName(StateCode);
+			}
+		}
 		public string StateCode;
 
 		public bool SerializeBuyers = false;
@@ -42,8 +48,7 @@ namespace api.Models
 				hReader.Read();
 				Address = hReader[1].ToString();
 				City = hReader[2].ToString();
-				State = hReader[3].ToString();
-				StateCode = StateInfo.GetCode(State);
+				StateCode = hReader[3].ToString();
 				PostalCode = hReader[4].ToString();
 
 				// Load Participants table data
