@@ -23,8 +23,8 @@ namespace api.Models
 				return Bids.Count;
 			}
 		}
-		public int BidsMax = 0;
-		public int BidsMin = 100000;
+		public decimal BidsMax = 0;
+		public decimal BidsMin = 100000;
 		public int ID; // Buyers table
 		public string FirstName;
 		public string FullName
@@ -36,7 +36,7 @@ namespace api.Models
 		}
 		public string LastName;
 		private List<int> ParticipantID = new List<int>();
-		public int TotalSpent = 0;
+		public decimal TotalSpent = 0;
 		public string Username;
 
 		public Buyer(int id)

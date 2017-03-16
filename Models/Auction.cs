@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Collections.Generic;
 using api.Services;
+using System.Runtime.Serialization;
 namespace api.Models
 {
 	public class Auction
@@ -25,6 +26,7 @@ namespace api.Models
 		}
 		public string StateCode;
 
+		[IgnoreDataMember]
 		public bool SerializeBuyers = false;
 
 		public Auction(int id)
@@ -62,12 +64,12 @@ namespace api.Models
 				Participants = Buyers.Count;
 
 				// Load Lots table data
-				var lCommand = new SqlCommand("SELECT Lot_ID FROM Lots WHERE Auction_ID = @id", connection);
+				var lCommand = new SqlCommand("SELECT ID FROM Lots WHERE Auction_ID = @id", connection);
 				lCommand.Parameters.Add("@id", SqlDbType.Int).Value = ID;
 				var lReader = lCommand.ExecuteReader();
 				while (lReader.Read())
 				{
-					Lots.Add(new Lot((int)pReader[0]));
+					Lots.Add(new Lot((int)lReader[0]));
 				}
 			}
 		}

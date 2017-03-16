@@ -24,6 +24,10 @@ namespace api.Services
 				command.Parameters.Add("@key", SqlDbType.VarChar).Value = key;
 				connection.Open();
 				var reader = command.ExecuteReader();
+				if (!reader.HasRows)
+				{
+					return false;
+				}
 				reader.Read();
 				if ((string)reader[0] == key)
 				{
@@ -41,6 +45,10 @@ namespace api.Services
 				command.Parameters.Add("@key", SqlDbType.VarChar).Value = key;
 				connection.Open();
 				var reader = command.ExecuteReader();
+				if (!reader.HasRows)
+				{
+					return false;
+				}
 				reader.Read();
 				if ((string)reader[0] == key)
 				{
@@ -58,6 +66,10 @@ namespace api.Services
 				command.Parameters.Add("@key", SqlDbType.VarChar).Value = key;
 				connection.Open();
 				var reader = command.ExecuteReader();
+				if (!reader.HasRows)
+				{
+					return false;
+				}
 				reader.Read();
 				if ((string)reader[0] == key)
 				{

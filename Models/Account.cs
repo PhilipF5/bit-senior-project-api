@@ -8,7 +8,7 @@ namespace api.Models
 	public class Account
 	{
 		public string Address;
-		public int AvailableCredit
+		public decimal AvailableCredit
 		{
 			get
 			{
@@ -30,9 +30,9 @@ namespace api.Models
 			}
 		}
 		public string StateCode;
-		public int TotalCredit;
-		public int TotalSpent = 0;
-		public int UsedCredit = 0;
+		public decimal TotalCredit;
+		public decimal TotalSpent = 0;
+		public decimal UsedCredit = 0;
 
 		public bool SerializeBuyers = false;
 
@@ -47,7 +47,7 @@ namespace api.Models
 				cReader.Read();
 				ID = (int)cReader[0];
 				Owner = (string)cReader[1];
-				TotalCredit = (int)cReader[2];
+				TotalCredit = (decimal)cReader[2];
 				ContactEmail = (string)cReader[3];
 				ContactPhone = (string)cReader[4];
 				Address = (string)cReader[5];
@@ -62,11 +62,11 @@ namespace api.Models
 				{
 					if ((string)bReader[1] == "Placed")
 					{
-						UsedCredit += (int)bReader[0];
+						UsedCredit += (decimal)bReader[0];
 					}
 					else if ((string)bReader[1] == "Winner")
 					{
-						TotalSpent += (int)bReader[0];
+						TotalSpent += (decimal)bReader[0];
 					}
 				}
 			}

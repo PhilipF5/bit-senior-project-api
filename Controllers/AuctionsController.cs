@@ -9,17 +9,18 @@ using api.Services;
 
 namespace api.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/auctions")]
 	public class AuctionsController : Controller
 	{
 		[HttpGet("{key}/{id}")]
-		public Auction GetAuction(string key, int id)
+		public dynamic GetAuction(string key, int id)
 		{
-			if (APIKey.IsValid(key))
+			if (!APIKey.IsValid(key))
 			{
-				return null;
+				return "Invalid key";
 			}
 			Auction auction = new Auction(id);
+			return auction.ID;
 			if (APIKey.IsManager(key))
 			{
 				auction.SerializeBuyers = true;

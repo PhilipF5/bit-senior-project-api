@@ -5,7 +5,7 @@ namespace api.Models
 {
 	public class Bid
 	{
-		public int Amount;
+		public decimal Amount;
 		public DateTime BidTime;
 		public int BuyerID;
 		public int ID;
@@ -23,7 +23,7 @@ namespace api.Models
 				bidsReader.Read();
 				ID = (int)bidsReader[0];
 				LotID = (int)bidsReader[1];
-				Amount = (int)bidsReader[3];
+				Amount = (decimal)bidsReader[3];
 				BidTime = DateTime.Parse(bidsReader[4].ToString());
 				Status = bidsReader[5].ToString();
 
