@@ -27,7 +27,7 @@ Most API functions require a key that is returned by the API upon successfully l
 
 ### API Calls Reference
 
-API methods currently available for use on the server are marked with a ![Live](https://github.com/PhilipF5/bit-senior-project-api/blob/gh-pages/live.png) tag.
+API methods currently available for use on the server are marked with a ![Live](http://www.philipfulgham.name/assets/live.png) tag.
 
 ```xml
 /login/mobile
