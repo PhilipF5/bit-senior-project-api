@@ -73,7 +73,7 @@ Returns the same information as the above, but for auctions in the system that h
 /auctions/{key}/{id}
 ```
 
-**Web and Mobile**
+![Live](http://www.philipfulgham.name/assets/live.png) **Web and Mobile**
 
 Returns the same information as the above, but for one specific auction determined by the value of the ID parameter. Buyers do not have access to information on other buyers.
 
