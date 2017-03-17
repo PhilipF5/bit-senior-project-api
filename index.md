@@ -179,20 +179,20 @@ Returns an array of `Accounts` sorted in descending order by total spent at auct
 
 | Property | Type | Value |
 | -------- | ---- | ----- |
-| Address | string | Street address for the account contact |
-| AvailableCredit | decimal | Amount of credit with outstanding bids subtracted |
-| Buyers | array | **Web Only** — Buyer objects for each buyer sharing the account |
-| City | string | City field for the account contact's mailing address |
-| ContactEmail | string | (*Optional*) Account contact email address |
-| ContactPhone | string | (*Optional*) Account contact phone number |
-| ID | int | ID number of the account in the database |
-| Owner | string | Name of the company that owns the account |
-| PostalCode | string | Postal code field for the account contact's mailing address |
-| State | string | Full name of the state for the account contact's mailing address |
-| StateCode | string | Two-letter abbreviation of the state for the account contact's mailing address |
-| TotalCredit | decimal | Total amount of credit assigned to the account |
-| TotalSpent | decimal | Total amount of money spent at all auctions by members of the account |
-| UsedCredit | decimal | Amount of credit currently tied up in outstanding bids |
+| address | string | Street address for the account contact |
+| availableCredit | decimal | Amount of credit with outstanding bids subtracted |
+| buyers | array | **Web Only** — Buyer objects for each buyer sharing the account |
+| city | string | City field for the account contact's mailing address |
+| contactEmail | string | (*Optional*) Account contact email address |
+| contactPhone | string | (*Optional*) Account contact phone number |
+| id | int | ID number of the account in the database |
+| owner | string | Name of the company that owns the account |
+| postalCode | string | Postal code field for the account contact's mailing address |
+| state | string | Full name of the state for the account contact's mailing address |
+| stateCode | string | Two-letter abbreviation of the state for the account contact's mailing address |
+| totalCredit | decimal | Total amount of credit assigned to the account |
+| totalSpent | decimal | Total amount of money spent at all auctions by members of the account |
+| usedCredit | decimal | Amount of credit currently tied up in outstanding bids |
 
 ---
 
@@ -200,17 +200,17 @@ Returns an array of `Accounts` sorted in descending order by total spent at auct
 
 | Property | Type | Value |
 | -------- | ---- | ----- |
-| Address | string | Street address of the auction house |
-| Buyers | array | **Web Only** — Buyer objects for each buyer participating in the auction |
-| City | string | City of the auction house |
-| EndTime | string | UTC date/time the auction will end, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format |
-| ID | int | ID number of the auction in the database |
-| Lots | array | Lot objects for each lot available in this auction |
-| Participants | int | Number of buyers participating in the auction |
-| PostalCode | string | Postal code of the auction house |
-| StartTime | string | UTC date/time the auction will start, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format |
-| State | string | Full name of the state of the auction house |
-| StateCode | string | Two-letter abbreviation of the state of the auction house |
+| address | string | Street address of the auction house |
+| buyers | array | **Web Only** — Buyer objects for each buyer participating in the auction |
+| city | string | City of the auction house |
+| endTime | string | UTC date/time the auction will end, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format |
+| id | int | ID number of the auction in the database |
+| lots | array | Lot objects for each lot available in this auction |
+| participants | int | Number of buyers participating in the auction |
+| postalCode | string | Postal code of the auction house |
+| startTime | string | UTC date/time the auction will start, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format |
+| state | string | Full name of the state of the auction house |
+| stateCode | string | Two-letter abbreviation of the state of the auction house |
 
 ---
 
@@ -218,12 +218,12 @@ Returns an array of `Accounts` sorted in descending order by total spent at auct
 
 | Property | Type | Value |
 | -------- | ---- | ----- |
-| Amount | decimal | Dollar value of this bid |
-| BidTime | string | UTC date/time the bid was placed, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format |
-| BuyerID | int | ID number of the buyer in the database |
-| ID | int | ID number of the bid in the database |
-| LotID | int | ID number of lot in the database |
-| Status | string | `Placed` — highest valid bid in the system; `Winner` — bid accepted by the auction manager; `Outbid` — bid no longer winning, funds have been released; `Low` — bid invalid because a higher bid already existed; `Late` — bid invalid because another bid has already won; `Duplicate` — bid invalid because current highest bid is from the same credit account |
+| amount | decimal | Dollar value of this bid |
+| bidTime | string | UTC date/time the bid was placed, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format |
+| buyerID | int | ID number of the buyer in the database |
+| id | int | ID number of the bid in the database |
+| lotID | int | ID number of lot in the database |
+| status | string | `Placed` — highest valid bid in the system; `Winner` — bid accepted by the auction manager; `Outbid` — bid no longer winning, funds have been released; `Low` — bid invalid because a higher bid already existed; `Late` — bid invalid because another bid has already won; `Duplicate` — bid invalid because current highest bid is from the same credit account |
 
 ---
 
@@ -231,18 +231,18 @@ Returns an array of `Accounts` sorted in descending order by total spent at auct
 
 | Property | Type | Value |
 | -------- | ---- | ----- |
-| AccountID | int | ID number of the credit account in the database |
-| AuctionCount | int | Number of auctions the buyer has participated in |
-| Bids | array | Bid objects for each bid the buyer has ever placed |
-| BidsCount | int | Number of bids the buyer has placed |
-| BidsMax | decimal | Highest bid the buyer has ever placed |
-| BidsMin | decimal | Lowest bid the buyer has ever placed |
-| ID | int | ID number of the buyer in the database |
-| FirstName | string | First name of the buyer |
-| FullName | string | First and last name of the buyer |
-| LastName | string | Last name of the buyer |
-| TotalSpent | decimal | Total amount of money spent at all auctions by the buyer |
-| Username | string | Login username for the buyer |
+| accountID | int | ID number of the credit account in the database |
+| auctionCount | int | Number of auctions the buyer has participated in |
+| bids | array | Bid objects for each bid the buyer has ever placed |
+| bidsCount | int | Number of bids the buyer has placed |
+| bidsMax | decimal | Highest bid the buyer has ever placed |
+| bidsMin | decimal | Lowest bid the buyer has ever placed |
+| id | int | ID number of the buyer in the database |
+| firstName | string | First name of the buyer |
+| fullName | string | First and last name of the buyer |
+| lastName | string | Last name of the buyer |
+| totalSpent | decimal | Total amount of money spent at all auctions by the buyer |
+| username | string | Login username for the buyer |
 
 ---
 
@@ -250,19 +250,19 @@ Returns an array of `Accounts` sorted in descending order by total spent at auct
 
 | Property | Type | Value |
 | -------- | ---- | ----- |
-| AuctionID | int | ID number of the auction in the database |
-| Bids | array | Bid objects for each bid placed for the lot |
-| BidsMax | Bid | Highest bid placed for the lot |
-| Color | string | Color of the vehicle |
-| Desc | string | Year, Make, Model, and Trim of the vehicle — e.g., "2012 Ford Fusion SEL" |
-| DetailLink | string | URL for unstructured data page associated with the vehicle |
-| ID | int | ID number of the lot in the database |
-| Make | string | Make of the vehicle |
-| MinPrice | int | Starting price of the lot |
-| Model | string | Model of the vehicle |
-| Status | string | `Sold` — lot has been sold; `Unsold` — lot is open for bidding, or auction has not started |
-| Trim | string | Trim package of the vehicle |
-| Winner | Bid | (*Optional*) Winning bid for the lot |
-| VehicleID | int | ID number of the vehicle in the database |
-| VIN | string | [Vehicle Identification Number](https://en.wikipedia.org/wiki/Vehicle_identification_number) assigned by the manufacturer |
-| Year | int | Model year of the vehicle |
+| auctionID | int | ID number of the auction in the database |
+| bids | array | Bid objects for each bid placed for the lot |
+| bidsMax | Bid | Highest bid placed for the lot |
+| color | string | Color of the vehicle |
+| desc | string | Year, Make, Model, and Trim of the vehicle — e.g., "2012 Ford Fusion SEL" |
+| detailLink | string | URL for unstructured data page associated with the vehicle |
+| id | int | ID number of the lot in the database |
+| make | string | Make of the vehicle |
+| minPrice | int | Starting price of the lot |
+| model | string | Model of the vehicle |
+| status | string | `Sold` — lot has been sold; `Unsold` — lot is open for bidding, or auction has not started |
+| trim | string | Trim package of the vehicle |
+| winner | Bid | (*Optional*) Winning bid for the lot |
+| vehicleID | int | ID number of the vehicle in the database |
+| vin | string | [Vehicle Identification Number](https://en.wikipedia.org/wiki/Vehicle_identification_number) assigned by the manufacturer |
+| year | int | Model year of the vehicle |
