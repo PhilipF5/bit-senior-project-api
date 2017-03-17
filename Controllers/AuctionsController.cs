@@ -20,7 +20,6 @@ namespace api.Controllers
 				return "Invalid key";
 			}
 			Auction auction = new Auction(id);
-			return auction.ID;
 			if (APIKey.IsManager(key))
 			{
 				auction.SerializeBuyers = true;
