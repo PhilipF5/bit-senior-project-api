@@ -28,8 +28,7 @@ namespace api
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc()
-			        .AddJsonOptions(options =>
+            services.AddMvc().AddJsonOptions(options =>
 			{
 				options.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
 				options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -42,7 +41,24 @@ namespace api
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.UseMvc();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+
+            app.UseStaticFiles();
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }
