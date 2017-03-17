@@ -1,6 +1,6 @@
 # Auction It!
 
-This is the documentation page for an automobile auction participation system designed with inspiration from CarMax, Inc. **This project is not officially endorsed or licensed by CarMax, Inc.** It is intended to fulfill the requirements for the capstone project of the Business Information Technology undergraduate program at Virginia Tech, with whom CarMax, Inc. partnered to provide project ideas for the Spring 2017 semester.
+This is the API documentation page for an automobile auction participation system designed with inspiration from CarMax, Inc. **This project is not officially endorsed or licensed by CarMax, Inc.** It is intended to fulfill the requirements for the capstone project of the Business Information Technology undergraduate program at Virginia Tech, with whom CarMax, Inc. partnered to provide project ideas for the Spring 2017 semester.
 
 ## Team Members
 
@@ -9,11 +9,7 @@ This is the documentation page for an automobile auction participation system de
 * Kyung Min Lee — Process Manager and Business Intelligence Analyst
 * Philip Fulgham — Web Developer and Structured Data Manager
 
-## Web Technologies Info
-
-The web app for this project uses Angular (formerly known as Angular 2), with styles written using the Less CSS preprocessor, web fonts provided by Adobe Typekit, dates and times parsed by Moment Timezone (a variant of Moment.js), and data-driven graphics from Google Charts. The API uses a Microsoft Azure resource group hosting an ASP.NET Core Web API and an Azure SQL Database.
-
-## API Documentation
+# API Documentation
 
 The endpoint of the API for this project is:
 
@@ -25,7 +21,7 @@ The remainder of the URL will vary based on the operation being performed.
 
 Most API functions require a key that is returned by the API upon successfully logging in via either the web or mobile apps.
 
-### API Calls Reference
+## API Calls Reference
 
 API methods currently available for use on the server are marked with a ![Live](http://www.philipfulgham.name/assets/live.png) tag.
 
