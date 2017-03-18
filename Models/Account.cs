@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Runtime.Serialization;
 using api.Services;
 namespace api.Models
 {
@@ -15,7 +16,7 @@ namespace api.Models
 				return TotalCredit - UsedCredit;
 			}
 		}
-		public List<Buyer> Buyers; // Not serialized for mobile users
+		public List<Buyer> Buyers = new List<Buyer>(); // Not serialized for mobile users
 		public string City;
 		public string ContactEmail;
 		public string ContactPhone;
@@ -34,6 +35,7 @@ namespace api.Models
 		public decimal TotalSpent = 0;
 		public decimal UsedCredit = 0;
 
+		[IgnoreDataMember]
 		public bool SerializeBuyers = false;
 
 		public Account(int id)
@@ -69,6 +71,47 @@ namespace api.Models
 						TotalSpent += (decimal)bReader[0];
 					}
 				}
+
+				var buyersCommand = new SqlCommand("SELECT ID FROM Buyers WHERE Account_ID = @id", connection);
+				buyersCommand.Parameters.Add("@id", SqlDbType.Int).Value = ID;
+				var buyersReader = buyersCommand.ExecuteReader();
+				while (buyersReader.Read())
+				{
+					Buyers.Add(new Buyer((int)buyersReader[0]));
+				}
+			}
+		}
+
+		public static List<Account> GetAll()
+		{
+			List<Account> accounts = new List<Account>();
+			using (var connection = new SqlConnection("Server=tcp:auctionit.database.windows.net,1433;Initial Catalog=auctionitdb;Persist Security Info=False;User ID=bit4454;Password=4Fy>oj@8&8;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+			{
+				var aCommand = new SqlCommand("SELECT ID FROM CreditAccounts", connection);
+				connection.Open();
+				var aReader = aCommand.ExecuteReader();
+				while (aReader.Read())
+				{
+					accounts.Add(new Account((int)aReader[0]));
+				}
+				foreach (Account acct in accounts)
+				{
+					acct.SerializeBuyers = true;
+				}
+			}
+			return accounts;
+		}
+
+		public static Account GetFromKey(string key)
+		{
+			using (var connection = new SqlConnection("Server=tcp:auctionit.database.windows.net,1433;Initial Catalog=auctionitdb;Persist Security Info=False;User ID=bit4454;Password=4Fy>oj@8&8;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+			{
+				var uCommand = new SqlCommand("SELECT Account_ID FROM Users, Buyers WHERE APIKey = @key AND Users.Buyer_ID = Buyers.ID", connection);
+				uCommand.Parameters.Add("@key", SqlDbType.VarChar).Value = key;
+				connection.Open();
+				var uReader = uCommand.ExecuteReader();
+				uReader.Read();
+				return new Account((int)uReader[0]);
 			}
 		}
 

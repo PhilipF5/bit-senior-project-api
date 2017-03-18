@@ -73,6 +73,7 @@ namespace api.Models
 				// Load Bids table data
 				var bidsCommand = new SqlCommand("SELECT * FROM Bids WHERE Participant_ID IN ({Range})", connection);
 				bidsCommand.AddArrayParameters(ParticipantID.ToArray(), "Range");
+				//Console.WriteLine(bidsCommand.CommandText); // debugging
 				var bidsReader = bidsCommand.ExecuteReader();
 				while (bidsReader.Read())
 				{
