@@ -80,7 +80,7 @@ Returns the same information as the above, but for one specific auction determin
 ---
 
 ```xml
-/auctions/bid/{key}/{lot-id}/{amount}
+/auctions/bid/{key}/{lotID}/{amount}
 ```
 
 **Mobile Only**
@@ -227,7 +227,7 @@ Returns an array of `Accounts` sorted in descending order by total spent at auct
 | buyerID | int | ID number of the buyer in the database |
 | id | int | ID number of the bid in the database |
 | lotID | int | ID number of lot in the database |
-| status | string | `Placed` — highest valid bid in the system; `Winner` — bid accepted by the auction manager; `Outbid` — bid no longer winning, funds have been released; `Low` — bid invalid because a higher bid already existed; `Late` — bid invalid because another bid has already won; `Duplicate` — bid invalid because current highest bid is from the same credit account |
+| status | string | `Placed` — highest valid bid in the system; `Winner` — bid accepted by the auction manager; `Outbid` — bid no longer winning, funds have been released; `Low` — bid invalid because a higher bid already existed; `Late` — bid invalid because another bid has already won; `Duplicate` — bid invalid because current highest bid is from the same credit account; `Unauthorized` — bid invalid because buyer is not registered to the auction |
 
 ---
 
