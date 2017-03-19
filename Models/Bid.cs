@@ -14,7 +14,7 @@ namespace api.Models
 
 		public Bid(int id)
 		{
-			using (var connection = new SqlConnection("Server=tcp:auctionit.database.windows.net,1433;Initial Catalog=auctionitdb;Persist Security Info=False;User ID=bit4454;Password=4Fy>oj@8&8;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
 			{
 				var bidsCommand = new SqlCommand("SELECT * FROM Bids WHERE ID = @id", connection);
 				bidsCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;

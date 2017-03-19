@@ -66,7 +66,7 @@ namespace api.Models
 
 		public Lot(int id)
 		{
-			using (var connection = new SqlConnection("Server=tcp:auctionit.database.windows.net,1433;Initial Catalog=auctionitdb;Persist Security Info=False;User ID=bit4454;Password=4Fy>oj@8&8;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
 			{
 				var vCommand = new SqlCommand("SELECT * FROM Lots, Vehicles, VehicleModels, VehicleMakes WHERE Lots.ID = @id AND Lots.Vehicle_ID = Vehicles.ID AND Vehicles.Model_ID = VehicleModels.ID AND VehicleModels.Make_ID = VehicleMakes.ID", connection);
 				vCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;
