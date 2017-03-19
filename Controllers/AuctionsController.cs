@@ -12,6 +12,16 @@ namespace api.Controllers
 	[Route("api/auctions")]
 	public class AuctionsController : Controller
 	{
+		[HttpGet("bid/{key}/{lotID}/{amount}")]
+		public dynamic Bid(string key, int lotID, decimal amount)
+		{
+			if (!APIKey.IsBuyer(key))
+			{
+				return "Invalid key";
+			}
+			return Models.Bid.Place(key, lotID, amount);
+		}
+
 		[HttpGet("{key}/{id}")]
 		public dynamic GetAuction(string key, int id)
 		{

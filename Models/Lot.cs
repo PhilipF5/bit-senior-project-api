@@ -13,10 +13,14 @@ namespace api.Models
 		{
 			get
 			{
-				Bid max = Bids[0];
+				if (Bids.Count == 0)
+				{
+					return null;
+				}
+				Bid max = null;
 				foreach (Bid bid in Bids)
 				{
-					if (bid.Amount > max.Amount)
+					if (bid.Status == "Placed" || bid.Status == "Winner")
 					{
 						max = bid;
 					}
@@ -53,7 +57,7 @@ namespace api.Models
 		{
 			get
 			{
-				if (BidsMax.Status == "Winner")
+				if (BidsMax != null && BidsMax.Status == "Winner")
 				{
 					return BidsMax;
 				}
@@ -85,7 +89,7 @@ namespace api.Models
 				VIN = (string)vReader[5];
 				Year = (int)vReader[7];
 
-				var bCommand = new SqlCommand("SELECT ID FROM Bids WHERE Lot_ID = @id", connection);
+				var bCommand = new SqlCommand("SELECT ID FROM Bids WHERE Lot_ID = @id ORDER BY BidTime", connection);
 				bCommand.Parameters.Add("@id", SqlDbType.Int).Value = ID;
 				var bReader = bCommand.ExecuteReader();
 				while (bReader.Read())

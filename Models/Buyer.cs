@@ -71,35 +71,38 @@ namespace api.Models
 				Username = (string)usersReader[0];
 
 				// Load Bids table data
-				var bidsCommand = new SqlCommand("SELECT * FROM Bids WHERE Participant_ID IN ({Range})", connection);
-				bidsCommand.AddArrayParameters(ParticipantID.ToArray(), "Range");
-				//Console.WriteLine(bidsCommand.CommandText); // debugging
-				var bidsReader = bidsCommand.ExecuteReader();
-				while (bidsReader.Read())
+				if (ParticipantID.Count > 0)
 				{
-					Bids.Add(new Bid((int)bidsReader[0]));
-				}
-				if (BidsCount > 0)
-				{
-					foreach (Bid bid in Bids)
+					var bidsCommand = new SqlCommand("SELECT * FROM Bids WHERE Participant_ID IN ({Range})", connection);
+					bidsCommand.AddArrayParameters(ParticipantID.ToArray(), "Range");
+					//Console.WriteLine(bidsCommand.CommandText); // debugging
+					var bidsReader = bidsCommand.ExecuteReader();
+					while (bidsReader.Read())
 					{
-						if (bid.Amount > BidsMax)
+						Bids.Add(new Bid((int)bidsReader[0]));
+					}
+					if (BidsCount > 0)
+					{
+						foreach (Bid bid in Bids)
 						{
-							BidsMax = bid.Amount;
-						}
-						if (bid.Amount < BidsMin)
-						{
-							BidsMin = bid.Amount;
-						}
-						if (bid.Status == "Winner")
-						{
-							TotalSpent += bid.Amount;
+							if (bid.Amount > BidsMax)
+							{
+								BidsMax = bid.Amount;
+							}
+							if (bid.Amount < BidsMin)
+							{
+								BidsMin = bid.Amount;
+							}
+							if (bid.Status == "Winner")
+							{
+								TotalSpent += bid.Amount;
+							}
 						}
 					}
-				}
-				else
-				{
-					BidsMin = 0;
+					else
+					{
+						BidsMin = 0;
+					}
 				}
 			}
 		}
