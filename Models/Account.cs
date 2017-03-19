@@ -40,7 +40,7 @@ namespace api.Models
 
 		public Account(int id)
 		{
-			using (var connection = new SqlConnection("Server=tcp:auctionit.database.windows.net,1433;Initial Catalog=auctionitdb;Persist Security Info=False;User ID=bit4454;Password=4Fy>oj@8&8;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
 			{
 				var cCommand = new SqlCommand("SELECT * FROM CreditAccounts WHERE ID = @id", connection);
 				cCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;
@@ -85,7 +85,7 @@ namespace api.Models
 		public static List<Account> GetAll()
 		{
 			List<Account> accounts = new List<Account>();
-			using (var connection = new SqlConnection("Server=tcp:auctionit.database.windows.net,1433;Initial Catalog=auctionitdb;Persist Security Info=False;User ID=bit4454;Password=4Fy>oj@8&8;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
 			{
 				var aCommand = new SqlCommand("SELECT ID FROM CreditAccounts", connection);
 				connection.Open();
@@ -104,7 +104,7 @@ namespace api.Models
 
 		public static Account GetFromKey(string key)
 		{
-			using (var connection = new SqlConnection("Server=tcp:auctionit.database.windows.net,1433;Initial Catalog=auctionitdb;Persist Security Info=False;User ID=bit4454;Password=4Fy>oj@8&8;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
 			{
 				var uCommand = new SqlCommand("SELECT Account_ID FROM Users, Buyers WHERE APIKey = @key AND Users.Buyer_ID = Buyers.ID", connection);
 				uCommand.Parameters.Add("@key", SqlDbType.VarChar).Value = key;

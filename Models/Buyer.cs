@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
@@ -41,7 +41,7 @@ namespace api.Models
 
 		public Buyer(int id)
 		{
-			using (var connection = new SqlConnection("Server=tcp:auctionit.database.windows.net,1433;Initial Catalog=auctionitdb;Persist Security Info=False;User ID=bit4454;Password=4Fy>oj@8&8;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
 			{
 				// Load Buyers table data
 				var buyersCommand = new SqlCommand("SELECT * FROM Buyers WHERE ID = @id", connection);
