@@ -222,6 +222,7 @@ Returns an array of `Accounts` sorted in descending order by total spent at auct
 
 | Property | Type | Value |
 | -------- | ---- | ----- |
+| accountID | int | ID number of the credit account in the database |
 | amount | decimal | Dollar value of this bid |
 | bidTime | string | UTC date/time the bid was placed, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format |
 | buyerID | int | ID number of the buyer in the database |
