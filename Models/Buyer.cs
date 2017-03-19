@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
@@ -41,7 +41,7 @@ namespace api.Models
 
 		public Buyer(int id)
 		{
-			using (var connection = new SqlConnection("Server=tcp:auctionit.database.windows.net,1433;Initial Catalog=auctionitdb;Persist Security Info=False;User ID=bit4454;Password=4Fy>oj@8&8;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
 			{
 				// Load Buyers table data
 				var buyersCommand = new SqlCommand("SELECT * FROM Buyers WHERE ID = @id", connection);
@@ -71,34 +71,38 @@ namespace api.Models
 				Username = (string)usersReader[0];
 
 				// Load Bids table data
-				var bidsCommand = new SqlCommand("SELECT * FROM Bids WHERE Participant_ID IN ({Range})", connection);
-				bidsCommand.AddArrayParameters(ParticipantID.ToArray(), "Range");
-				var bidsReader = bidsCommand.ExecuteReader();
-				while (bidsReader.Read())
+				if (ParticipantID.Count > 0)
 				{
-					Bids.Add(new Bid((int)bidsReader[0]));
-				}
-				if (BidsCount > 0)
-				{
-					foreach (Bid bid in Bids)
+					var bidsCommand = new SqlCommand("SELECT * FROM Bids WHERE Participant_ID IN ({Range})", connection);
+					bidsCommand.AddArrayParameters(ParticipantID.ToArray(), "Range");
+					//Console.WriteLine(bidsCommand.CommandText); // debugging
+					var bidsReader = bidsCommand.ExecuteReader();
+					while (bidsReader.Read())
 					{
-						if (bid.Amount > BidsMax)
+						Bids.Add(new Bid((int)bidsReader[0]));
+					}
+					if (BidsCount > 0)
+					{
+						foreach (Bid bid in Bids)
 						{
-							BidsMax = bid.Amount;
-						}
-						if (bid.Amount < BidsMin)
-						{
-							BidsMin = bid.Amount;
-						}
-						if (bid.Status == "Winner")
-						{
-							TotalSpent += bid.Amount;
+							if (bid.Amount > BidsMax)
+							{
+								BidsMax = bid.Amount;
+							}
+							if (bid.Amount < BidsMin)
+							{
+								BidsMin = bid.Amount;
+							}
+							if (bid.Status == "Winner")
+							{
+								TotalSpent += bid.Amount;
+							}
 						}
 					}
-				}
-				else
-				{
-					BidsMin = 0;
+					else
+					{
+						BidsMin = 0;
+					}
 				}
 			}
 		}
