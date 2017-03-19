@@ -4,10 +4,10 @@ This is the API documentation page for an automobile auction participation syste
 
 ## Team Members
 
-* Brandon Kim — Project Manager and Mobile Developer
-* James Jae Youn Kim — Unstructured Data Manager and Quality Assurance Analyst
-* Kyung Min Lee — Process Manager and Business Intelligence Analyst
-* Philip Fulgham — Web Developer and Structured Data Manager
+* **Brandon Kim**, Project Manager and Mobile Developer
+* **James Jae Youn Kim**, Unstructured Data Manager and Quality Assurance Analyst
+* **Kyung Min Lee**, Process Manager and Business Intelligence Analyst
+* **Philip Fulgham**, Web Developer and Structured Data Manager
 
 # API Documentation
 
