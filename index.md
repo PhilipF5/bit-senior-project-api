@@ -21,6 +21,10 @@ The remainder of the URL will vary based on the operation being performed.
 
 Most API functions require a key that is returned by the API upon successfully logging in via either the web or mobile apps.
 
+## Your New Best Friend: Auction 11
+
+Auction 11 is a very special auction in the database that is useful for testing methods. Auction 11 (named after its ID number) is an auction that is always current, because it's over two months long (don't worry, the fictional buyers can take fictional meal and bathroom breaks). Why do we have this? Because it gives us an auction that we can always rely on to be currently active, without constantly adding new auctions or adjusting dates in the database.
+
 ## API Calls Reference
 
 API methods currently available for use on the server are marked with a ![Live](http://www.philipfulgham.name/assets/live.png) tag.
@@ -31,7 +35,7 @@ API methods currently available for use on the server are marked with a ![Live](
 
 **Mobile Only**
 
-Sends login credentials for the mobile app via POST. The API will check the credentials against the Users table in the database. If the credentials match, the user's API key is returned to the mobile app, and this key will be used to authenticate further API calls.
+Sends login credentials for the mobile app via POST. The credentials should be sent as an `application/json` content-type, formatted as a single string with a space separating the username and password. The API will check the credentials against the Users table in the database and return a `Login` object, which is described below.
 
 ---
 
@@ -243,6 +247,18 @@ Returns an array of `Accounts` sorted in descending order by total spent at auct
 | lastName | string | Last name of the buyer |
 | totalSpent | decimal | Total amount of money spent at all auctions by the buyer |
 | username | string | Login username for the buyer |
+
+---
+
+### Login
+
+| Property | Type | Value |
+| -------- | ---- | ----- |
+| apiKey | string | API key that can be passed as the `{key}` parameter in an API call |
+| error | string | Error message if the login failed, or null if it succeeded |
+| firstName | string | First name of the user who is now logged in |
+| lastName | string | Last name of the user who is now logged in |
+| username | string | Username that was submitted to the API |
 
 ---
 
