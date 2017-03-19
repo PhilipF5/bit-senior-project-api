@@ -4,10 +4,10 @@ This is the API documentation page for an automobile auction participation syste
 
 ## Team Members
 
-* Brandon Kim — Project Manager and Mobile Developer
-* James Jae Youn Kim — Unstructured Data Manager and Quality Assurance Analyst
-* Kyung Min Lee — Process Manager and Business Intelligence Analyst
-* Philip Fulgham — Web Developer and Structured Data Manager
+* **Brandon Kim**, Project Manager and Mobile Developer
+* **James Jae Youn Kim**, Unstructured Data Manager and Quality Assurance Analyst
+* **Kyung Min Lee**, Process Manager and Business Intelligence Analyst
+* **Philip Fulgham**, Web Developer and Structured Data Manager
 
 # API Documentation
 
@@ -33,7 +33,7 @@ API methods currently available for use on the server are marked with a ![Live](
 /login/mobile
 ```
 
-**Mobile Only**
+![Live](http://www.philipfulgham.name/assets/live.png) **Mobile Only**
 
 Sends login credentials for the mobile app via POST. The credentials should be sent as an `application/json` content-type, formatted as a single string with a space separating the username and password. The API will check the credentials against the Users table in the database and return a `Login` object, which is described below.
 
@@ -43,7 +43,7 @@ Sends login credentials for the mobile app via POST. The credentials should be s
 /login/web
 ```
 
-**Web Only**
+![Live](http://www.philipfulgham.name/assets/live.png) **Web Only**
 
 Same as above, except this handles logins from the web interface. The API checks the credentials against the Managers table instead of the Users table.
 
@@ -80,10 +80,10 @@ Returns the same information as the above, but for one specific auction determin
 ---
 
 ```xml
-/auctions/bid/{key}/{lot-id}/{amount}
+/auctions/bid/{key}/{lotID}/{amount}
 ```
 
-**Mobile Only**
+![Live](http://www.philipfulgham.name/assets/live.png) **Mobile Only**
 
 Places a bid for a lot, specified by its ID, at an auction. Returns a `Bid` object indicating whether the bid was recorded successfully or there were any errors. The key will be double-checked to verify that the user is registered for this auction.
 
@@ -123,7 +123,7 @@ Returns `Lot` objects sorted into an array of `Types`, with appropriate totals i
 /accounts/{key}
 ```
 
-**Web and Mobile**
+![Live](http://www.philipfulgham.name/assets/live.png) **Web and Mobile**
 
 On web, returns the `Account` objects for all open credit accounts. On mobile, returns the `Account` object associated with the buyer profile key supplied.
 
@@ -222,12 +222,13 @@ Returns an array of `Accounts` sorted in descending order by total spent at auct
 
 | Property | Type | Value |
 | -------- | ---- | ----- |
+| accountID | int | ID number of the credit account in the database |
 | amount | decimal | Dollar value of this bid |
 | bidTime | string | UTC date/time the bid was placed, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format |
 | buyerID | int | ID number of the buyer in the database |
 | id | int | ID number of the bid in the database |
 | lotID | int | ID number of lot in the database |
-| status | string | `Placed` — highest valid bid in the system; `Winner` — bid accepted by the auction manager; `Outbid` — bid no longer winning, funds have been released; `Low` — bid invalid because a higher bid already existed; `Late` — bid invalid because another bid has already won; `Duplicate` — bid invalid because current highest bid is from the same credit account |
+| status | string | `Placed` — highest valid bid in the system; `Winner` — bid accepted by the auction manager; `Outbid` — bid no longer winning, funds have been released; `Low` — bid invalid because a higher bid already existed; `Late` — bid invalid because another bid has already won; `Duplicate` — bid invalid because current highest bid is from the same credit account; `Unauthorized` — bid invalid because buyer is not registered to the auction, all other properties will be 0 |
 
 ---
 
