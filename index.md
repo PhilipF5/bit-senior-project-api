@@ -228,7 +228,7 @@ Returns an array of `Accounts` sorted in descending order by total spent at auct
 | buyerID | int | ID number of the buyer in the database |
 | id | int | ID number of the bid in the database |
 | lotID | int | ID number of lot in the database |
-| status | string | `Placed` — highest valid bid in the system; `Winner` — bid accepted by the auction manager; `Outbid` — bid no longer winning, funds have been released; `Low` — bid invalid because a higher bid already existed; `Late` — bid invalid because another bid has already won; `Duplicate` — bid invalid because current highest bid is from the same credit account; `Unauthorized` — bid invalid because buyer is not registered to the auction, all other properties will be 0 |
+| status | string | `Placed` — highest valid bid in the system; `Winner` — bid accepted by the auction manager; `Outbid` — bid no longer winning, funds have been released; `Low` — bid invalid because a higher bid already existed or did not meet minimum price; `Late` — bid invalid because another bid has already won; `Duplicate` — bid invalid because current highest bid is from the same credit account; `Unauthorized` — bid invalid because buyer is not registered to the auction, all other properties will be 0; `Bounced` — bid invalid because account had insufficient available credit |
 
 ---
 
