@@ -12,7 +12,7 @@ namespace api.Models
 		public int BuyerID;
 		public int ID;
 		public int LotID;
-		public string Status; // "Placed" "Winner" "Outbid" "Low" "Late" "Duplicate" or "Unauthorized"
+		public string Status; // "Placed" "Winner" "Outbid" "Low" "Late" "Duplicate" "Unauthorized" or "Bounced"
 
 		public Bid(string status = "Unauthorized")
 		{
@@ -47,20 +47,10 @@ namespace api.Models
 		{
 			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
 			{
-				/*
-				var lCommand = new SqlCommand("SELECT Auction_ID, MinPrice FROM Lots WHERE ID = @id", connection);
-				lCommand.Parameters.Add("@id", SqlDbType.Int).Value = lotID;
-				connection.Open();
-				var lReader = lCommand.ExecuteReader();
-				lReader.Read();
-				var auctionID = (int)lReader[0];
-				var minPrice = (int)lReader[1];
-				*/
-
 				var lot = new Lot(lotID);
 				string status;
 
-				var buyerCommand = new SqlCommand("SELECT Buyers.ID FROM Users, Buyers WHERE APIKey = @key AND Users.Buyer_ID = Buyers.ID", connection);
+				var buyerCommand = new SqlCommand("SELECT Buyers.ID, Buyers.Account_ID FROM Users, Buyers WHERE APIKey = @key AND Users.Buyer_ID = Buyers.ID", connection);
 				buyerCommand.Parameters.Add("@key", SqlDbType.VarChar).Value = key;
 				connection.Open();
 				var buyerReader = buyerCommand.ExecuteReader();
@@ -82,7 +72,15 @@ namespace api.Models
 					pID = (int)pReader[0];
 				}
 
-				if (lot.BidsMax == null)
+				if (amount > new Account((int)buyerReader[1]).AvailableCredit)
+				{
+					status = "Bounced";
+				}
+				else if (amount < lot.MinPrice)
+				{
+					status = "Low";
+				}
+				else if (lot.BidsMax == null)
 				{
 					status = "Placed";
 				}
