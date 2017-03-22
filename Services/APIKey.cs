@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Security.Cryptography;
+using Npgsql;
 
 namespace api.Services
 {
@@ -18,10 +19,10 @@ namespace api.Services
 
 		public static bool IsBuyer(string key)
 		{
-			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
-				var command = new SqlCommand("SELECT APIKey FROM Users WHERE APIKey = @key", connection);
-				command.Parameters.Add("@key", SqlDbType.VarChar).Value = key;
+				var command = new NpgsqlCommand("SELECT APIKey FROM Users WHERE APIKey = @key", connection);
+				command.Parameters.Add("@key", NpgsqlTypes.NpgsqlDbType.Varchar).Value = key;
 				connection.Open();
 				var reader = command.ExecuteReader();
 				if (!reader.HasRows)
@@ -39,10 +40,10 @@ namespace api.Services
 
 		public static bool IsManager(string key)
 		{
-			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
-				var command = new SqlCommand("SELECT APIKey FROM Admins WHERE APIKey = @key", connection);
-				command.Parameters.Add("@key", SqlDbType.VarChar).Value = key;
+				var command = new NpgsqlCommand("SELECT APIKey FROM Admins WHERE APIKey = @key", connection);
+				command.Parameters.Add("@key", NpgsqlTypes.NpgsqlDbType.Varchar).Value = key;
 				connection.Open();
 				var reader = command.ExecuteReader();
 				if (!reader.HasRows)
@@ -60,10 +61,10 @@ namespace api.Services
 
 		public static bool IsValid(string key)
 		{
-			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
-				var command = new SqlCommand("SELECT APIKey FROM Users WHERE APIKey = @key UNION SELECT APIKey FROM Admins WHERE APIKey = @key", connection);
-				command.Parameters.Add("@key", SqlDbType.VarChar).Value = key;
+				var command = new NpgsqlCommand("SELECT APIKey FROM Users WHERE APIKey = @key UNION SELECT APIKey FROM Admins WHERE APIKey = @key", connection);
+				command.Parameters.Add("@key", NpgsqlTypes.NpgsqlDbType.Varchar).Value = key;
 				connection.Open();
 				var reader = command.ExecuteReader();
 				if (!reader.HasRows)

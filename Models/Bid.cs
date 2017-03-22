@@ -1,7 +1,10 @@
-﻿using System;
+using System;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc.Internal;
+using Npgsql;
+
 namespace api.Models
 {
 	public class Bid
@@ -21,10 +24,10 @@ namespace api.Models
 
 		public Bid(int id)
 		{
-			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
-				var bidsCommand = new SqlCommand("SELECT * FROM Bids WHERE ID = @id", connection);
-				bidsCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;
+				var bidsCommand = new NpgsqlCommand("SELECT * FROM Bids WHERE ID = @id", connection);
+				bidsCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = id;
 				connection.Open();
 				var bidsReader = bidsCommand.ExecuteReader();
 				bidsReader.Read();
@@ -34,8 +37,8 @@ namespace api.Models
 				BidTime = DateTime.Parse(bidsReader[4].ToString());
 				Status = bidsReader[5].ToString();
 
-				var pCommand = new SqlCommand("SELECT Buyer_ID, Account_ID FROM Participants, Buyers WHERE Participants.ID = @id AND Buyer_ID = Buyers.ID", connection);
-				pCommand.Parameters.Add("@id", SqlDbType.Int).Value = (int)bidsReader[2];
+				var pCommand = new NpgsqlCommand("SELECT Buyer_ID, Account_ID FROM Participants, Buyers WHERE Participants.ID = @id AND Buyer_ID = Buyers.ID", connection);
+				pCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = (int)bidsReader[2];
 				var pReader = pCommand.ExecuteReader();
 				pReader.Read();
 				BuyerID = (int)pReader[0];
@@ -45,21 +48,21 @@ namespace api.Models
 
 		public static Bid Place(string key, int lotID, decimal amount)
 		{
-			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
 				var lot = new Lot(lotID);
 				string status;
 
-				var buyerCommand = new SqlCommand("SELECT Buyers.ID, Buyers.Account_ID FROM Users, Buyers WHERE APIKey = @key AND Users.Buyer_ID = Buyers.ID", connection);
-				buyerCommand.Parameters.Add("@key", SqlDbType.VarChar).Value = key;
+				var buyerCommand = new NpgsqlCommand("SELECT Buyers.ID, Buyers.Account_ID FROM Users, Buyers WHERE APIKey = @key AND Users.Buyer_ID = Buyers.ID", connection);
+				buyerCommand.Parameters.Add("@key", NpgsqlTypes.NpgsqlDbType.Varchar).Value = key;
 				connection.Open();
 				var buyerReader = buyerCommand.ExecuteReader();
 				buyerReader.Read();
 				var buyer = new Buyer((int)buyerReader[0]);
 
-				var pCommand = new SqlCommand("SELECT ID FROM Participants WHERE Buyer_ID = @buyer AND Auction_ID = @auction", connection);
-				pCommand.Parameters.Add("@buyer", SqlDbType.Int).Value = buyer.ID;
-				pCommand.Parameters.Add("@auction", SqlDbType.Int).Value = lot.AuctionID;
+				var pCommand = new NpgsqlCommand("SELECT ID FROM Participants WHERE Buyer_ID = @buyer AND Auction_ID = @auction", connection);
+				pCommand.Parameters.Add("@buyer", NpgsqlTypes.NpgsqlDbType.Integer).Value = buyer.ID;
+				pCommand.Parameters.Add("@auction", NpgsqlTypes.NpgsqlDbType.Integer).Value = lot.AuctionID;
 				var pReader = pCommand.ExecuteReader();
 				pReader.Read();
 				int pID;
@@ -101,21 +104,21 @@ namespace api.Models
 					status = "Placed";
 				}
 
-				var bidInsertCommand = new SqlCommand("INSERT INTO Bids(Lot_ID, Participant_ID, Amount, BidTime, Status) VALUES (@lotID, @pID, @amount, @bidTime, @status)", connection);
-				bidInsertCommand.Parameters.Add("@lotID", SqlDbType.Int).Value = lot.ID;
-				bidInsertCommand.Parameters.Add("@pID", SqlDbType.Int).Value = pID;
-				bidInsertCommand.Parameters.Add("@amount", SqlDbType.Decimal).Value = amount;
-				bidInsertCommand.Parameters.Add("@bidTime", SqlDbType.DateTime).Value = DateTime.UtcNow;
-				bidInsertCommand.Parameters.Add("@status", SqlDbType.VarChar).Value = status;
+				var bidInsertCommand = new NpgsqlCommand("INSERT INTO Bids(Lot_ID, Participant_ID, Amount, BidTime, Status) VALUES (@lotID, @pID, @amount, @bidTime, @status)", connection);
+				bidInsertCommand.Parameters.Add("@lotID", NpgsqlTypes.NpgsqlDbType.Integer).Value = lot.ID;
+				bidInsertCommand.Parameters.Add("@pID", NpgsqlTypes.NpgsqlDbType.Integer).Value = pID;
+				bidInsertCommand.Parameters.Add("@amount", NpgsqlTypes.NpgsqlDbType.Money).Value = amount;
+				bidInsertCommand.Parameters.Add("@bidTime", NpgsqlTypes.NpgsqlDbType.TimestampTZ).Value = DateTime.UtcNow;
+				bidInsertCommand.Parameters.Add("@status", NpgsqlTypes.NpgsqlDbType.Varchar).Value = status;
 				if (lot.BidsMax != null && status == "Placed")
 				{
-					var bidUpdateCommand = new SqlCommand("UPDATE Bids SET Status = 'Outbid' WHERE ID = @outbid", connection);
-					bidUpdateCommand.Parameters.Add("@outbid", SqlDbType.Int).Value = lot.BidsMax.ID;
+					var bidUpdateCommand = new NpgsqlCommand("UPDATE Bids SET Status = 'Outbid' WHERE ID = @outbid", connection);
+					bidUpdateCommand.Parameters.Add("@outbid", NpgsqlTypes.NpgsqlDbType.Integer).Value = lot.BidsMax.ID;
 					bidUpdateCommand.ExecuteNonQuery();
 				}
 				bidInsertCommand.ExecuteNonQuery();
 
-				var getID = new SqlCommand("SELECT CONVERT(int,IDENT_CURRENT('Bids'))", connection).ExecuteReader();
+				var getID = new NpgsqlCommand("SELECT CONVERT(int,IDENT_CURRENT('Bids'))", connection).ExecuteReader();
 				getID.Read();
 				return new Bid((int)getID[0]);
 			}

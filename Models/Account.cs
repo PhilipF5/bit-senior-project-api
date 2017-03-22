@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Runtime.Serialization;
 using api.Services;
+using Npgsql;
+
 namespace api.Models
 {
 	public class Account
@@ -40,10 +42,10 @@ namespace api.Models
 
 		public Account(int id)
 		{
-			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
-				var cCommand = new SqlCommand("SELECT * FROM CreditAccounts WHERE ID = @id", connection);
-				cCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;
+				var cCommand = new NpgsqlCommand("SELECT * FROM CreditAccounts WHERE ID = @id", connection);
+				cCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = id;
 				connection.Open();
 				var cReader = cCommand.ExecuteReader();
 				cReader.Read();
@@ -57,8 +59,8 @@ namespace api.Models
 				StateCode = (string)cReader[7];
 				PostalCode = (string)cReader[8];
 
-				var bCommand = new SqlCommand("SELECT Bids.Amount, Bids.Status FROM Bids, Participants, Buyers WHERE Buyers.Account_ID = @id AND Bids.Participant_ID = Participants.ID AND Participants.Buyer_ID = Buyers.ID", connection);
-				bCommand.Parameters.Add("@id", SqlDbType.Int).Value = ID;
+				var bCommand = new NpgsqlCommand("SELECT Bids.Amount, Bids.Status FROM Bids, Participants, Buyers WHERE Buyers.Account_ID = @id AND Bids.Participant_ID = Participants.ID AND Participants.Buyer_ID = Buyers.ID", connection);
+				bCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;
 				var bReader = bCommand.ExecuteReader();
 				while (bReader.Read())
 				{
@@ -72,8 +74,8 @@ namespace api.Models
 					}
 				}
 
-				var buyersCommand = new SqlCommand("SELECT ID FROM Buyers WHERE Account_ID = @id", connection);
-				buyersCommand.Parameters.Add("@id", SqlDbType.Int).Value = ID;
+				var buyersCommand = new NpgsqlCommand("SELECT ID FROM Buyers WHERE Account_ID = @id", connection);
+				buyersCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;
 				var buyersReader = buyersCommand.ExecuteReader();
 				while (buyersReader.Read())
 				{
@@ -85,9 +87,9 @@ namespace api.Models
 		public static List<Account> GetAll()
 		{
 			List<Account> accounts = new List<Account>();
-			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
-				var aCommand = new SqlCommand("SELECT ID FROM CreditAccounts", connection);
+				var aCommand = new NpgsqlCommand("SELECT ID FROM CreditAccounts", connection);
 				connection.Open();
 				var aReader = aCommand.ExecuteReader();
 				while (aReader.Read())
@@ -104,10 +106,10 @@ namespace api.Models
 
 		public static Account GetFromKey(string key)
 		{
-			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
-				var uCommand = new SqlCommand("SELECT Account_ID FROM Users, Buyers WHERE APIKey = @key AND Users.Buyer_ID = Buyers.ID", connection);
-				uCommand.Parameters.Add("@key", SqlDbType.VarChar).Value = key;
+				var uCommand = new NpgsqlCommand("SELECT Account_ID FROM Users, Buyers WHERE APIKey = @key AND Users.Buyer_ID = Buyers.ID", connection);
+				uCommand.Parameters.Add("@key", NpgsqlTypes.NpgsqlDbType.Varchar).Value = key;
 				connection.Open();
 				var uReader = uCommand.ExecuteReader();
 				uReader.Read();
