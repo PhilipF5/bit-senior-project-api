@@ -44,16 +44,19 @@ namespace api.Models
 				ID = (int)aReader[0];
 				StartTime = DateTime.Parse(aReader[2].ToString());
 				EndTime = DateTime.Parse(aReader[3].ToString());
+				var auctionHouseID = (int)aReader[1];
+				aReader.Close();
 
 				// Load AuctionHouses table data
 				var hCommand = new NpgsqlCommand("SELECT * FROM AuctionHouses WHERE ID = @id", connection);
-				hCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = (int)aReader[1];
+				hCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = auctionHouseID;
 				var hReader = hCommand.ExecuteReader();
 				hReader.Read();
 				Address = hReader[1].ToString();
 				City = hReader[2].ToString();
 				StateCode = hReader[3].ToString();
 				PostalCode = hReader[4].ToString();
+				hReader.Close();
 
 				// Load Participants table data
 				var pCommand = new NpgsqlCommand("SELECT Buyer_ID FROM Participants WHERE Auction_ID = @id", connection);
@@ -64,6 +67,7 @@ namespace api.Models
 					Buyers.Add(new Buyer((int)pReader[0]));
 				}
 				Participants = Buyers.Count;
+				pReader.Close();
 
 				// Load Lots table data
 				var lCommand = new NpgsqlCommand("SELECT ID FROM Lots WHERE Auction_ID = @id", connection);

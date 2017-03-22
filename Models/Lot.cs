@@ -41,7 +41,7 @@ namespace api.Models
 		public string DetailLink;
 		public int ID;
 		public string Make;
-		public int MinPrice;
+		public decimal MinPrice;
 		public string Model;
 		public string Status
 		{
@@ -84,12 +84,13 @@ namespace api.Models
 				DetailLink = (string)vReader[11];
 				ID = (int)vReader[0];
 				Make = (string)vReader[17];
-				MinPrice = (int)vReader[3];
+				MinPrice = (decimal)vReader[3];
 				Model = (string)vReader[14];
 				Trim = (string)vReader[9];
 				VehicleID = (int)vReader[2];
 				VIN = (string)vReader[5];
 				Year = (int)vReader[7];
+				vReader.Close();
 
 				var bCommand = new NpgsqlCommand("SELECT ID FROM Bids WHERE Lot_ID = @id ORDER BY BidTime", connection);
 				bCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;

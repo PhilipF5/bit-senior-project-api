@@ -33,12 +33,14 @@ namespace api.Models
 				bidsReader.Read();
 				ID = (int)bidsReader[0];
 				LotID = (int)bidsReader[1];
+				var participantID = (int)bidsReader[2];
 				Amount = (decimal)bidsReader[3];
 				BidTime = DateTime.Parse(bidsReader[4].ToString());
 				Status = bidsReader[5].ToString();
+				bidsReader.Close();
 
 				var pCommand = new NpgsqlCommand("SELECT Buyer_ID, Account_ID FROM Participants, Buyers WHERE Participants.ID = @id AND Buyer_ID = Buyers.ID", connection);
-				pCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = (int)bidsReader[2];
+				pCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = participantID;
 				var pReader = pCommand.ExecuteReader();
 				pReader.Read();
 				BuyerID = (int)pReader[0];
@@ -59,6 +61,8 @@ namespace api.Models
 				var buyerReader = buyerCommand.ExecuteReader();
 				buyerReader.Read();
 				var buyer = new Buyer((int)buyerReader[0]);
+				var accountID = (int)buyerReader[1];
+				buyerReader.Close();
 
 				var pCommand = new NpgsqlCommand("SELECT ID FROM Participants WHERE Buyer_ID = @buyer AND Auction_ID = @auction", connection);
 				pCommand.Parameters.Add("@buyer", NpgsqlTypes.NpgsqlDbType.Integer).Value = buyer.ID;
@@ -75,7 +79,7 @@ namespace api.Models
 					pID = (int)pReader[0];
 				}
 
-				if (amount > new Account((int)buyerReader[1]).AvailableCredit)
+				if (amount > new Account(accountID).AvailableCredit)
 				{
 					status = "Bounced";
 				}
@@ -103,6 +107,7 @@ namespace api.Models
 				{
 					status = "Placed";
 				}
+				pReader.Close();
 
 				var bidInsertCommand = new NpgsqlCommand("INSERT INTO Bids(Lot_ID, Participant_ID, Amount, BidTime, Status) VALUES (@lotID, @pID, @amount, @bidTime, @status)", connection);
 				bidInsertCommand.Parameters.Add("@lotID", NpgsqlTypes.NpgsqlDbType.Integer).Value = lot.ID;
@@ -118,7 +123,7 @@ namespace api.Models
 				}
 				bidInsertCommand.ExecuteNonQuery();
 
-				var getID = new NpgsqlCommand("SELECT CONVERT(int,IDENT_CURRENT('Bids'))", connection).ExecuteReader();
+				var getID = new NpgsqlCommand("SELECT CAST(CURRVAL(pg_get_serial_sequence('bids','id')) AS INTEGER)", connection).ExecuteReader();
 				getID.Read();
 				return new Bid((int)getID[0]);
 			}

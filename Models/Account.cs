@@ -58,6 +58,7 @@ namespace api.Models
 				City = (string)cReader[6];
 				StateCode = (string)cReader[7];
 				PostalCode = (string)cReader[8];
+				cReader.Close();
 
 				var bCommand = new NpgsqlCommand("SELECT Bids.Amount, Bids.Status FROM Bids, Participants, Buyers WHERE Buyers.Account_ID = @id AND Bids.Participant_ID = Participants.ID AND Participants.Buyer_ID = Buyers.ID", connection);
 				bCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;
@@ -73,6 +74,7 @@ namespace api.Models
 						TotalSpent += (decimal)bReader[0];
 					}
 				}
+				bReader.Close();
 
 				var buyersCommand = new NpgsqlCommand("SELECT ID FROM Buyers WHERE Account_ID = @id", connection);
 				buyersCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;
