@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using Npgsql;
 
 namespace api
 {
@@ -14,18 +15,18 @@ namespace api
 
 		public Login(string user, string pass, string type = "user")
 		{
-			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
-				SqlCommand command;
+				NpgsqlCommand command;
 				if (type == "admin")
 				{
-					command = new SqlCommand("SELECT APIKey, FirstName, LastName, Username, Password FROM Admins, Managers WHERE Username = @user AND Admins.Manager_ID = Managers.ID", connection);
+					command = new NpgsqlCommand("SELECT APIKey, FirstName, LastName, Username, Password FROM Admins, Managers WHERE Username = @user AND Admins.Manager_ID = Managers.ID", connection);
 				}
 				else
 				{
-					command = new SqlCommand("SELECT APIKey, FirstName, LastName, Username, AuthKey FROM Users, Buyers WHERE Username = @user AND Users.Buyer_ID = Buyers.ID", connection);
+					command = new NpgsqlCommand("SELECT APIKey, FirstName, LastName, Username, AuthKey FROM Users, Buyers WHERE Username = @user AND Users.Buyer_ID = Buyers.ID", connection);
 				}
-				command.Parameters.Add("@user", SqlDbType.VarChar).Value = user;
+				command.Parameters.Add("@user", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user;
 				connection.Open();
 				var reader = command.ExecuteReader();
 				reader.Read();

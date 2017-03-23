@@ -3,6 +3,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Linq;
+using Npgsql;
+
 namespace api.Models
 {
 	public class Buyer
@@ -41,11 +43,11 @@ namespace api.Models
 
 		public Buyer(int id)
 		{
-			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
 				// Load Buyers table data
-				var buyersCommand = new SqlCommand("SELECT * FROM Buyers WHERE ID = @id", connection);
-				buyersCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;
+				var buyersCommand = new NpgsqlCommand("SELECT * FROM Buyers WHERE ID = @id", connection);
+				buyersCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = id;
 				connection.Open();
 				var buyersReader = buyersCommand.ExecuteReader();
 				buyersReader.Read();
@@ -53,29 +55,31 @@ namespace api.Models
 				FirstName = (string)buyersReader[1];
 				LastName = (string)buyersReader[2];
 				AccountID = (int)buyersReader[3];
+				buyersReader.Close();
 
 				// Load Auctions table data
-				var auctionsCommand = new SqlCommand("SELECT ID FROM Participants WHERE Buyer_ID = @id", connection);
-				auctionsCommand.Parameters.Add("@id", SqlDbType.Int).Value = ID;
+				var auctionsCommand = new NpgsqlCommand("SELECT ID FROM Participants WHERE Buyer_ID = @id", connection);
+				auctionsCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;
 				var auctionsReader = auctionsCommand.ExecuteReader();
 				while (auctionsReader.Read())
 				{
 					ParticipantID.Add((int)auctionsReader[0]);
 				}
+				auctionsReader.Close();
 
 				// Load Users table data
-				var usersCommand = new SqlCommand("SELECT Username FROM Users WHERE Buyer_ID = @id", connection);
-				usersCommand.Parameters.Add("@id", SqlDbType.Int).Value = ID;
+				var usersCommand = new NpgsqlCommand("SELECT Username FROM Users WHERE Buyer_ID = @id", connection);
+				usersCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;
 				var usersReader = usersCommand.ExecuteReader();
 				usersReader.Read();
 				Username = (string)usersReader[0];
+				usersReader.Close();
 
 				// Load Bids table data
 				if (ParticipantID.Count > 0)
 				{
-					var bidsCommand = new SqlCommand("SELECT * FROM Bids WHERE Participant_ID IN ({Range})", connection);
+					var bidsCommand = new NpgsqlCommand("SELECT * FROM Bids WHERE Participant_ID IN ({Range})", connection);
 					bidsCommand.AddArrayParameters(ParticipantID.ToArray(), "Range");
-					//Console.WriteLine(bidsCommand.CommandText); // debugging
 					var bidsReader = bidsCommand.ExecuteReader();
 					while (bidsReader.Read())
 					{

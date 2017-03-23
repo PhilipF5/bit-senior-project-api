@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Security.Cryptography.X509Certificates;
+using Npgsql;
+
 namespace api.Models
 {
 	public class Lot
@@ -39,7 +41,7 @@ namespace api.Models
 		public string DetailLink;
 		public int ID;
 		public string Make;
-		public int MinPrice;
+		public decimal MinPrice;
 		public string Model;
 		public string Status
 		{
@@ -70,10 +72,10 @@ namespace api.Models
 
 		public Lot(int id)
 		{
-			using (var connection = new SqlConnection(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_bit4454database")))
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
-				var vCommand = new SqlCommand("SELECT * FROM Lots, Vehicles, VehicleModels, VehicleMakes WHERE Lots.ID = @id AND Lots.Vehicle_ID = Vehicles.ID AND Vehicles.Model_ID = VehicleModels.ID AND VehicleModels.Make_ID = VehicleMakes.ID", connection);
-				vCommand.Parameters.Add("@id", SqlDbType.Int).Value = id;
+				var vCommand = new NpgsqlCommand("SELECT * FROM Lots, Vehicles, VehicleModels, VehicleMakes WHERE Lots.ID = @id AND Lots.Vehicle_ID = Vehicles.ID AND Vehicles.Model_ID = VehicleModels.ID AND VehicleModels.Make_ID = VehicleMakes.ID", connection);
+				vCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = id;
 				connection.Open();
 				var vReader = vCommand.ExecuteReader();
 				vReader.Read();
@@ -82,15 +84,16 @@ namespace api.Models
 				DetailLink = (string)vReader[11];
 				ID = (int)vReader[0];
 				Make = (string)vReader[17];
-				MinPrice = (int)vReader[3];
+				MinPrice = (decimal)vReader[3];
 				Model = (string)vReader[14];
 				Trim = (string)vReader[9];
 				VehicleID = (int)vReader[2];
 				VIN = (string)vReader[5];
 				Year = (int)vReader[7];
+				vReader.Close();
 
-				var bCommand = new SqlCommand("SELECT ID FROM Bids WHERE Lot_ID = @id ORDER BY BidTime", connection);
-				bCommand.Parameters.Add("@id", SqlDbType.Int).Value = ID;
+				var bCommand = new NpgsqlCommand("SELECT ID FROM Bids WHERE Lot_ID = @id ORDER BY BidTime", connection);
+				bCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;
 				var bReader = bCommand.ExecuteReader();
 				while (bReader.Read())
 				{
