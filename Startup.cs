@@ -33,6 +33,15 @@ namespace api
 				options.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
 				options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 			});
+
+			services.AddCors(options =>
+			{
+				options.AddPolicy("AllowLocalhost",
+					builder => builder.WithOrigins("http://localhost:8100")
+				                  .AllowAnyMethod()
+				                  .AllowAnyHeader()
+				                  .AllowCredentials());
+			});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +61,8 @@ namespace api
             }
 
             app.UseStaticFiles();
+
+			app.UseCors("AllowLocalhost");
 
             app.UseMvc(routes =>
             {

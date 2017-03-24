@@ -13,6 +13,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.3.0" />
+    <PackageReference Include="Npgsql" Version="3.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Cors" Version="1.1.2" />
   </ItemGroup>
 
 
