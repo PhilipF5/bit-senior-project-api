@@ -92,7 +92,7 @@ namespace api.Models
 				Year = (int)vReader[7];
 				vReader.Close();
 
-				var bCommand = new NpgsqlCommand("SELECT ID FROM Bids WHERE Lot_ID = @id ORDER BY BidTime", connection);
+				var bCommand = new NpgsqlCommand("SELECT ID FROM Bids WHERE Lot_ID = @id ORDER BY BidTime DESC", connection);
 				bCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;
 				var bReader = bCommand.ExecuteReader();
 				while (bReader.Read())
