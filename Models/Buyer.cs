@@ -10,6 +10,7 @@ namespace api.Models
 	public class Buyer
 	{
 		public int AccountID;
+		public List<int> Auctions = new List<int>();
 		public int AuctionCount
 		{
 			get
@@ -58,12 +59,13 @@ namespace api.Models
 				buyersReader.Close();
 
 				// Load Auctions table data
-				var auctionsCommand = new NpgsqlCommand("SELECT ID FROM Participants WHERE Buyer_ID = @id", connection);
+				var auctionsCommand = new NpgsqlCommand("SELECT ID, Auction_ID FROM Participants WHERE Buyer_ID = @id", connection);
 				auctionsCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;
 				var auctionsReader = auctionsCommand.ExecuteReader();
 				while (auctionsReader.Read())
 				{
 					ParticipantID.Add((int)auctionsReader[0]);
+					Auctions.Add((int)auctionsReader[1]);
 				}
 				auctionsReader.Close();
 

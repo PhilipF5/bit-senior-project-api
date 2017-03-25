@@ -19,8 +19,9 @@ namespace api
 		{
 			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
 			{
+				user = user.ToLower();
 				NpgsqlCommand command;
-				command = new NpgsqlCommand("SELECT APIKey, FirstName, LastName, Username, Password FROM Admins, Managers WHERE Username = @user AND Admins.Manager_ID = Managers.ID UNION SELECT APIKey, FirstName, LastName, Username, AuthKey FROM Users, Buyers WHERE Username = @user AND Users.Buyer_ID = Buyers.ID", connection);
+				command = new NpgsqlCommand("SELECT APIKey, FirstName, LastName, LOWER(Username), Password FROM Admins, Managers WHERE LOWER(Username) = @user AND Admins.Manager_ID = Managers.ID UNION SELECT APIKey, FirstName, LastName, Username, AuthKey FROM Users, Buyers WHERE Username = @user AND Users.Buyer_ID = Buyers.ID", connection);
 				command.Parameters.Add("@user", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user;
 				connection.Open();
 				var reader = command.ExecuteReader();
