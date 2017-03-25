@@ -80,6 +80,26 @@ namespace api.Models
 			}
 		}
 
+		public static List<Auction> GetAll(bool loadBuyers = false)
+		{
+			List<Auction> auctions = new List<Auction>();
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
+			{
+				var aCommand = new NpgsqlCommand("SELECT ID FROM Auctions ORDER BY StartTime", connection);
+				connection.Open();
+				var aReader = aCommand.ExecuteReader();
+				while (aReader.Read())
+				{
+					auctions.Add(new Auction((int)aReader[0]));
+				}
+				foreach (Auction auct in auctions)
+				{
+					auct.SerializeBuyers = loadBuyers;
+				}
+			}
+			return auctions;
+		}
+
 		public bool ShouldSerializeBuyers()
 		{
 			return SerializeBuyers;
