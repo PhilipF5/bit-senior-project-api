@@ -11,6 +11,13 @@ namespace api.Models
 	{
 		public int AuctionID;
 		public List<Bid> Bids = new List<Bid>();
+		public int BidsCount
+		{
+			get
+			{
+				return Bids.Count;
+			}
+		}
 		public Bid BidsMax
 		{
 			get
@@ -31,6 +38,17 @@ namespace api.Models
 			}
 		}
 		public string Color;
+		public decimal CurrentPrice
+		{
+			get
+			{
+				if (BidsMax == null)
+				{
+					return MinPrice;
+				}
+				else return BidsMax.Amount;
+			}
+		}
 		public string Desc // Year + Make + Model + Trim
 		{
 			get
@@ -41,6 +59,7 @@ namespace api.Models
 		public string DetailLink;
 		public int ID;
 		public string Make;
+		public int Mileage;
 		public decimal MinPrice;
 		public string Model;
 		public string Status
@@ -84,6 +103,7 @@ namespace api.Models
 				DetailLink = (string)vReader[11];
 				ID = (int)vReader[0];
 				Make = (string)vReader[17];
+				Mileage = (int)vReader[10];
 				MinPrice = (decimal)vReader[3];
 				Model = (string)vReader[14];
 				Trim = (string)vReader[9];
