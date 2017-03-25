@@ -17,6 +17,27 @@ namespace api.Services
 			return hex.Replace("-", "");
 		}
 
+		public static int GetBuyerID(string key)
+		{
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
+			{
+				var command = new NpgsqlCommand("SELECT APIKey, Buyer_ID FROM Users WHERE APIKey = @key", connection);
+				command.Parameters.Add("@key", NpgsqlTypes.NpgsqlDbType.Varchar).Value = key;
+				connection.Open();
+				var reader = command.ExecuteReader();
+				if (!reader.HasRows)
+				{
+					return 0;
+				}
+				reader.Read();
+				if ((string)reader[0] == key)
+				{
+					return (int)reader[1];
+				}
+				else return 0;
+			}
+		}
+
 		public static bool IsBuyer(string key)
 		{
 			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
