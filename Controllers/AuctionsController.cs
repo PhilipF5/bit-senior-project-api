@@ -36,5 +36,15 @@ namespace api.Controllers
 			}
 			return auction;
 		}
+
+		[HttpGet("{key}")]
+		public dynamic GetAllAuctions(string key)
+		{
+			if (!APIKey.IsValid(key))
+			{
+				return "Invalid key";
+			}
+			else return Auction.GetAll(APIKey.IsManager(key));
+		}
 	}
 }

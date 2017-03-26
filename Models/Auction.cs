@@ -42,8 +42,8 @@ namespace api.Models
 				var aReader = aCommand.ExecuteReader();
 				aReader.Read();
 				ID = (int)aReader[0];
-				StartTime = DateTime.Parse(aReader[2].ToString());
-				EndTime = DateTime.Parse(aReader[3].ToString());
+				StartTime = DateTime.Parse(aReader[2].ToString()).ToUniversalTime();
+				EndTime = DateTime.Parse(aReader[3].ToString()).ToUniversalTime();
 				var auctionHouseID = (int)aReader[1];
 				aReader.Close();
 
@@ -78,6 +78,26 @@ namespace api.Models
 					Lots.Add(new Lot((int)lReader[0]));
 				}
 			}
+		}
+
+		public static List<Auction> GetAll(bool loadBuyers = false)
+		{
+			List<Auction> auctions = new List<Auction>();
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
+			{
+				var aCommand = new NpgsqlCommand("SELECT ID FROM Auctions ORDER BY StartTime", connection);
+				connection.Open();
+				var aReader = aCommand.ExecuteReader();
+				while (aReader.Read())
+				{
+					auctions.Add(new Auction((int)aReader[0]));
+				}
+				foreach (Auction auct in auctions)
+				{
+					auct.SerializeBuyers = loadBuyers;
+				}
+			}
+			return auctions;
 		}
 
 		public bool ShouldSerializeBuyers()
