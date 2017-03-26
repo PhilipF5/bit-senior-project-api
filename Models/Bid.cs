@@ -35,7 +35,7 @@ namespace api.Models
 				LotID = (int)bidsReader[1];
 				var participantID = (int)bidsReader[2];
 				Amount = (decimal)bidsReader[3];
-				BidTime = DateTime.Parse(bidsReader[4].ToString());
+				BidTime = DateTime.Parse(bidsReader[4].ToString()).ToUniversalTime();
 				Status = bidsReader[5].ToString();
 				bidsReader.Close();
 

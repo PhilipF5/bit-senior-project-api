@@ -42,8 +42,8 @@ namespace api.Models
 				var aReader = aCommand.ExecuteReader();
 				aReader.Read();
 				ID = (int)aReader[0];
-				StartTime = DateTime.Parse(aReader[2].ToString());
-				EndTime = DateTime.Parse(aReader[3].ToString());
+				StartTime = DateTime.Parse(aReader[2].ToString()).ToUniversalTime();
+				EndTime = DateTime.Parse(aReader[3].ToString()).ToUniversalTime();
 				var auctionHouseID = (int)aReader[1];
 				aReader.Close();
 
