@@ -74,6 +74,7 @@ namespace api.Models
 			}
 		}
 		public string Trim;
+		public string Type;
 		public Bid Winner
 		{
 			get
@@ -107,6 +108,7 @@ namespace api.Models
 				MinPrice = (decimal)vReader[3];
 				Model = (string)vReader[14];
 				Trim = (string)vReader[9];
+				Type = (string)vReader[15];
 				VehicleID = (int)vReader[2];
 				VIN = (string)vReader[5];
 				Year = (int)vReader[7];
