@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using api.Models;
 using api.Services;
+using api.Models.Analytics;
 
 namespace api.Controllers
 {
@@ -45,6 +46,36 @@ namespace api.Controllers
 				return "Invalid key";
 			}
 			else return Auction.GetAll(APIKey.IsManager(key));
+		}
+
+		[HttpGet("{key}/states")]
+		public dynamic GetStateTotals(string key)
+		{
+			if (!APIKey.IsManager(key))
+			{
+				return "Invalid key";
+			}
+			else return new States();
+		}
+
+		[HttpGet("{key}/models")]
+		public dynamic GetModelTotals(string key)
+		{
+			if (!APIKey.IsManager(key))
+			{
+				return "Invalid key";
+			}
+			else return new Models.Analytics.Models();
+		}
+
+		[HttpGet("{key}/types")]
+		public dynamic GetTypeTotals(string key)
+		{
+			if (!APIKey.IsManager(key))
+			{
+				return "Invalid key";
+			}
+			else return new Types();
 		}
 	}
 }
