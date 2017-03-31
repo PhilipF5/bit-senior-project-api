@@ -4,7 +4,7 @@ namespace api.Services
 {
 	public static class StateInfo
 	{
-		private static Tuple<string, string>[] states = {
+		public static Tuple<string, string>[] StateData = {
 			Tuple.Create("Alabama", "AL"),
 			Tuple.Create("Alaska", "AK"),
 			Tuple.Create("Arizona", "AZ"),
@@ -60,7 +60,7 @@ namespace api.Services
 
 		public static string GetCode(string name)
 		{
-			foreach (var state in states)
+			foreach (var state in StateData)
 			{
 				if (state.Item1 == name)
 				{
@@ -72,7 +72,7 @@ namespace api.Services
 
 		public static string GetName(string code)
 		{
-			foreach (var state in states)
+			foreach (var state in StateData)
 			{
 				if (state.Item2 == code)
 				{
