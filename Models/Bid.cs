@@ -48,6 +48,23 @@ namespace api.Models
 			}
 		}
 
+		public static bool Accept(int lotID)
+		{
+			Lot lot = new Lot(lotID);
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
+			{
+				var bCommand = new NpgsqlCommand("UPDATE Bids SET Status = 'Winner' WHERE ID = @id", connection);
+				bCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = lot.BidsMax.ID;
+				connection.Open();
+				int rowsAffected = bCommand.ExecuteNonQuery();
+				if (rowsAffected == 1)
+				{
+					return true;
+				}
+				else return false;
+			}
+		}
+
 		public static Bid Place(string key, int lotID, decimal amount)
 		{
 			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))

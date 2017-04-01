@@ -13,6 +13,16 @@ namespace api.Controllers
 	[Route("api/auctions")]
 	public class AuctionsController : Controller
 	{
+		[HttpGet("{key}/{id}/accept")]
+		public dynamic AcceptBid(string key, int id)
+		{
+			if (!APIKey.IsManager(key))
+			{
+				return "Invalid key";
+			}
+			return Models.Bid.Accept(id);
+		}
+
 		[HttpGet("bid/{key}/{lotID}/{amount}")]
 		public dynamic Bid(string key, int lotID, decimal amount)
 		{
