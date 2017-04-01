@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Runtime.Serialization;
 using api.Services;
 using Npgsql;
+using api.Controllers;
 
 namespace api.Models
 {
@@ -83,6 +84,28 @@ namespace api.Models
 				{
 					Buyers.Add(new Buyer((int)buyersReader[0]));
 				}
+			}
+		}
+
+		public static Account Create(InputAccount input)
+		{
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
+			{
+				var cCommand = new NpgsqlCommand("INSERT INTO CreditAccounts(Owner, Credit, ContactEmail, ContactPhone, Address, City, State, PostalCode) VALUES (@owner, @credit, @email, @phone, @address, @city, @state, @postal)", connection);
+				connection.Open();
+				cCommand.Parameters.Add("@owner", NpgsqlTypes.NpgsqlDbType.Varchar).Value = input.DealerName;
+				cCommand.Parameters.Add("@credit", NpgsqlTypes.NpgsqlDbType.Money).Value = input.CreditAmount;
+				cCommand.Parameters.Add("@email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = input.ContactEmail;
+				cCommand.Parameters.Add("@phone", NpgsqlTypes.NpgsqlDbType.Varchar).Value = input.ContactPhone;
+				cCommand.Parameters.Add("@address", NpgsqlTypes.NpgsqlDbType.Varchar).Value = input.StreetAddress;
+				cCommand.Parameters.Add("@city", NpgsqlTypes.NpgsqlDbType.Varchar).Value = input.City;
+				cCommand.Parameters.Add("@state", NpgsqlTypes.NpgsqlDbType.Varchar).Value = input.State;
+				cCommand.Parameters.Add("@postal", NpgsqlTypes.NpgsqlDbType.Varchar).Value = input.PostalCode;
+
+				cCommand.ExecuteNonQuery();
+				var getID = new NpgsqlCommand("SELECT CAST(CURRVAL(pg_get_serial_sequence('creditaccounts','id')) AS INTEGER)", connection).ExecuteReader();
+				getID.Read();
+				return new Account((int)getID[0]);
 			}
 		}
 

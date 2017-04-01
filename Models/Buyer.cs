@@ -4,6 +4,8 @@ using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Linq;
 using Npgsql;
+using api.Controllers;
+using api.Services;
 
 namespace api.Models
 {
@@ -110,6 +112,34 @@ namespace api.Models
 						BidsMin = 0;
 					}
 				}
+			}
+		}
+
+		public static Tuple<string, string> Create(InputBuyer input)
+		{
+			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
+			{
+				var bCommand = new NpgsqlCommand("INSERT INTO Buyers(FirstName, LastName, Account_ID) VALUES (@first, @last, @acct)", connection);
+				connection.Open();
+				bCommand.Parameters.Add("@first", NpgsqlTypes.NpgsqlDbType.Varchar).Value = input.FirstName;
+				bCommand.Parameters.Add("@last", NpgsqlTypes.NpgsqlDbType.Varchar).Value = input.LastName;
+				bCommand.Parameters.Add("@acct", NpgsqlTypes.NpgsqlDbType.Integer).Value = input.AccountID;
+
+				bCommand.ExecuteNonQuery();
+				var getID = new NpgsqlCommand("SELECT CAST(CURRVAL(pg_get_serial_sequence('buyers','id')) AS INTEGER)", connection).ExecuteReader();
+				getID.Read();
+				var buyerID = (int)getID[0];
+				getID.Close();
+
+				string authKey;
+				var uCommand = new NpgsqlCommand("INSERT INTO Users(Username, AuthKey, Buyer_ID, APIKey) VALUES (@username, @authkey, @buyer, @apikey)", connection);
+				uCommand.Parameters.Add("@username", NpgsqlTypes.NpgsqlDbType.Varchar).Value = input.Username;
+				uCommand.Parameters.Add("@authkey", NpgsqlTypes.NpgsqlDbType.Varchar).Value = authKey = APIKey.Generate().Substring(3, 4);
+				uCommand.Parameters.Add("@buyer", NpgsqlTypes.NpgsqlDbType.Integer).Value = buyerID;
+				uCommand.Parameters.Add("@apikey", NpgsqlTypes.NpgsqlDbType.Varchar).Value = APIKey.Generate();
+
+				uCommand.ExecuteNonQuery();
+				return Tuple.Create(input.Username, authKey);
 			}
 		}
 	}
