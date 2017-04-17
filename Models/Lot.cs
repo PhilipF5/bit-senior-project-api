@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Security.Cryptography.X509Certificates;
 using Npgsql;
+using api.Services;
 
 namespace api.Models
 {
@@ -92,36 +93,37 @@ namespace api.Models
 
 		public Lot(int id)
 		{
-			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
-			{
-				var vCommand = new NpgsqlCommand("SELECT * FROM Lots, Vehicles, VehicleModels, VehicleMakes WHERE Lots.ID = @id AND Lots.Vehicle_ID = Vehicles.ID AND Vehicles.Model_ID = VehicleModels.ID AND VehicleModels.Make_ID = VehicleMakes.ID", connection);
-				vCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = id;
-				connection.Open();
-				var vReader = vCommand.ExecuteReader();
-				vReader.Read();
-				AuctionID = (int)vReader[1];
-				Color = (string)vReader[8];
-				DetailLink = (string)vReader[11];
-				ID = (int)vReader[0];
-				Make = (string)vReader[17];
-				Mileage = (int)vReader[10];
-				MinPrice = (decimal)vReader[3];
-				Model = (string)vReader[14];
-				Trim = (string)vReader[9];
-				Type = (string)vReader[15];
-				VehicleID = (int)vReader[2];
-				VIN = (string)vReader[5];
-				Year = (int)vReader[7];
-				vReader.Close();
+			NpgsqlConnection connection = new Database().Connection;
 
-				var bCommand = new NpgsqlCommand("SELECT ID FROM Bids WHERE Lot_ID = @id ORDER BY BidTime DESC", connection);
-				bCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;
-				var bReader = bCommand.ExecuteReader();
-				while (bReader.Read())
-				{
-					Bids.Add(new Bid((int)bReader[0]));
-				}
+			NpgsqlCommand vCommand = new NpgsqlCommand("SELECT * FROM Lots, Vehicles, VehicleModels, VehicleMakes WHERE Lots.ID = @id AND Lots.Vehicle_ID = Vehicles.ID AND Vehicles.Model_ID = VehicleModels.ID AND VehicleModels.Make_ID = VehicleMakes.ID", connection);
+			vCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = id;
+			NpgsqlDataReader vReader = vCommand.ExecuteReader();
+			vReader.Read();
+			AuctionID = (int)vReader[1];
+			Color = (string)vReader[8];
+			DetailLink = (string)vReader[11];
+			ID = (int)vReader[0];
+			Make = (string)vReader[17];
+			Mileage = (int)vReader[10];
+			MinPrice = (decimal)vReader[3];
+			Model = (string)vReader[14];
+			Trim = (string)vReader[9];
+			Type = (string)vReader[15];
+			VehicleID = (int)vReader[2];
+			VIN = (string)vReader[5];
+			Year = (int)vReader[7];
+			vReader.Close();
+
+			NpgsqlCommand bCommand = new NpgsqlCommand("SELECT ID FROM Bids WHERE Lot_ID = @id ORDER BY BidTime DESC", connection);
+			bCommand.Parameters.Add("@id", NpgsqlTypes.NpgsqlDbType.Integer).Value = ID;
+			NpgsqlDataReader bReader = bCommand.ExecuteReader();
+			while (bReader.Read())
+			{
+				Bids.Add(new Bid((int)bReader[0]));
 			}
+			bReader.Close();
+
+			connection.Close();
 		}
 	}
 }

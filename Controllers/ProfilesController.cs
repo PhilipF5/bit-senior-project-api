@@ -34,7 +34,7 @@ namespace api.Controllers
 		[HttpGet("{key}")]
 		public dynamic GetByKey(string key)
 		{
-			var id = APIKey.GetBuyerID(key);
+			int id = APIKey.GetBuyerID(key);
 			if (id != 0)
 			{
 				return new Buyer(id);

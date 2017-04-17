@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using Npgsql;
 using api.Models;
+using api.Services;
 
 namespace api
 {
@@ -17,44 +18,36 @@ namespace api
 
 		public Login(string user, string pass)
 		{
-			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
+			NpgsqlConnection connection = new Database().Connection;
+
+			user = user.ToLower();
+			NpgsqlCommand command = new NpgsqlCommand("SELECT APIKey, FirstName, LastName, LOWER(Username), Password FROM Admins, Managers WHERE LOWER(Username) = @user AND Admins.Manager_ID = Managers.ID UNION SELECT APIKey, FirstName, LastName, LOWER(Username), AuthKey FROM Users, Buyers WHERE LOWER(Username) = @user AND Users.Buyer_ID = Buyers.ID", connection);
+			command.Parameters.Add("@user", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user;
+			NpgsqlDataReader reader = command.ExecuteReader();
+			reader.Read();
+			if (reader.HasRows)
 			{
-				user = user.ToLower();
-				NpgsqlCommand command;
-				command = new NpgsqlCommand("SELECT APIKey, FirstName, LastName, LOWER(Username), Password FROM Admins, Managers WHERE LOWER(Username) = @user AND Admins.Manager_ID = Managers.ID UNION SELECT APIKey, FirstName, LastName, LOWER(Username), AuthKey FROM Users, Buyers WHERE LOWER(Username) = @user AND Users.Buyer_ID = Buyers.ID", connection);
-				command.Parameters.Add("@user", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user;
-				connection.Open();
-				var reader = command.ExecuteReader();
-				reader.Read();
-				if (reader.HasRows)
+				if ((string)reader[3] == user)
 				{
-					if ((string)reader[3] == user)
+					if ((string)reader[4] == pass)
 					{
-						if ((string)reader[4] == pass)
+						APIKey = (string)reader[0];
+						FirstName = (string)reader[1];
+						LastName = (string)reader[2];
+						Username = (string)reader[3];
+						if (Services.APIKey.IsBuyer(APIKey))
 						{
-							APIKey = (string)reader[0];
-							FirstName = (string)reader[1];
-							LastName = (string)reader[2];
-							Username = (string)reader[3];
-							if (Services.APIKey.IsBuyer(APIKey))
-							{
-								Role = "user";
-							}
-							else if (Services.APIKey.IsManager(APIKey))
-							{
-								Role = "admin";
-							}
+							Role = "user";
 						}
-						else
+						else if (Services.APIKey.IsManager(APIKey))
 						{
-							Username = user;
-							Error = "Invalid password";
+							Role = "admin";
 						}
 					}
 					else
 					{
 						Username = user;
-						Error = "Invalid username";
+						Error = "Invalid password";
 					}
 				}
 				else
@@ -63,6 +56,13 @@ namespace api
 					Error = "Invalid username";
 				}
 			}
+			else
+			{
+				Username = user;
+				Error = "Invalid username";
+			}
+			reader.Close();
+			connection.Close();
 		}
 	}
 }

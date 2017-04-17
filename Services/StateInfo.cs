@@ -60,7 +60,7 @@ namespace api.Services
 
 		public static string GetCode(string name)
 		{
-			foreach (var state in StateData)
+			foreach (Tuple<string, string> state in StateData)
 			{
 				if (state.Item1 == name)
 				{
@@ -72,7 +72,7 @@ namespace api.Services
 
 		public static string GetName(string code)
 		{
-			foreach (var state in StateData)
+			foreach (Tuple<string, string> state in StateData)
 			{
 				if (state.Item2 == code)
 				{

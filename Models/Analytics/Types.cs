@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Npgsql;
+using api.Services;
 
 namespace api.Models.Analytics
 {
@@ -15,17 +16,15 @@ namespace api.Models.Analytics
 
 		public Types()
 		{
-			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
+			NpgsqlConnection connection = new Database().Connection;
+
+			NpgsqlCommand aCommand = new NpgsqlCommand("SELECT DISTINCT category FROM VehicleModels", connection);
+			NpgsqlDataReader aReader = aCommand.ExecuteReader();
+			while (aReader.Read())
 			{
-				var aCommand = new NpgsqlCommand("SELECT DISTINCT category FROM VehicleModels", connection);
-				connection.Open();
-				var aReader = aCommand.ExecuteReader();
-				while (aReader.Read())
-				{
-					TypeNames.Add(aReader[0].ToString());
-				}
-				aReader.Close();
+				TypeNames.Add(aReader[0].ToString());
 			}
+			aReader.Close();
 
 			Auctions = Auction.GetAll();
 			foreach (string type in TypeNames)

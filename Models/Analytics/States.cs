@@ -17,7 +17,7 @@ namespace api.Models.Analytics
 		public States()
 		{
 			Auctions = Auction.GetAll();
-			foreach (var state in StateInfo.StateData)
+			foreach (Tuple<string, string> state in StateInfo.StateData)
 			{
 				decimal revenue = 0;
 				int volume = 0;

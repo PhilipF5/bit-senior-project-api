@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using Npgsql;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using api.Services;
 
 namespace api.Models.Analytics
 {
@@ -16,17 +17,15 @@ namespace api.Models.Analytics
 
 		public Models()
 		{
-			using (var connection = new NpgsqlConnection(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_bit4454postgres")))
+			NpgsqlConnection connection = new Database().Connection;
+
+			NpgsqlCommand aCommand = new NpgsqlCommand("SELECT MakeName, ModelName FROM VehicleMakes, VehicleModels WHERE VehicleMakes.ID = VehicleModels.Make_ID", connection);
+			NpgsqlDataReader aReader = aCommand.ExecuteReader();
+			while (aReader.Read())
 			{
-				var aCommand = new NpgsqlCommand("SELECT MakeName, ModelName FROM VehicleMakes, VehicleModels WHERE VehicleMakes.ID = VehicleModels.Make_ID", connection);
-				connection.Open();
-				var aReader = aCommand.ExecuteReader();
-				while (aReader.Read())
-				{
-					ModelNames.Add(aReader[0].ToString() + " " + aReader[1].ToString());
-				}
-				aReader.Close();
+				ModelNames.Add(aReader[0].ToString() + " " + aReader[1].ToString());
 			}
+			aReader.Close();
 
 			Auctions = Auction.GetAll();
 			foreach (string model in ModelNames)
@@ -47,6 +46,8 @@ namespace api.Models.Analytics
 				SalesByRevenue.Add(revenue);
 				SalesByVolume.Add(volume);
 			}
+
+			connection.Close();
 		}
 	}
 }
